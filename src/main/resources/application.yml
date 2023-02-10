@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    group:
+      "default":
+        - "single"
+      "single":
+        - "single"
+      "local":
+        - "local"
+      "docker":
+        - "docker"
+      "prod" :
+  config:
+    import:
+      - noti.yml
+      - kafka.yml
+  application:
+    name: notification-service

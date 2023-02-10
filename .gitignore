@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### security
+/src/main/resources/kafka.yml
+/src/main/resources/gaaji-notification-fcm.json
+/src/main/resources/noti.yml
