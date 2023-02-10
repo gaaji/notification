@@ -1,4 +1,4 @@
-package com.gaaji.notification.service;
+package com.gaaji.notification.adaptor;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -18,18 +18,19 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Service
-public class MessageService {
+@Component
+public class FcmSender {
 
 
     private final Environment env;
     private final String FCM_PRIVATE_KEY_PATH;
     private final String FIRE_BASE_SCOPE;
 
-    public MessageService(Environment env) {
+
+    public FcmSender(Environment env) {
         this.env = env;
         FCM_PRIVATE_KEY_PATH = env.getProperty("fcm.key.path");
         FIRE_BASE_SCOPE = env.getProperty("fcm.key.scope");
@@ -55,10 +56,17 @@ public class MessageService {
         }
     }
 
+
+    public void sendServerMessage(List<String> tokenList,  String body) {
+        sendByTokenList(tokenList,"가지마켓",body,
+                "https://todoay-picture.s3.ap-northeast-2.amazonaws.com/gaaji/fd308fa8-f9c1-4e2c-8a35-4c0816b51f23gajji.png");
+    }
+
     // 알림 보내기
-    public void sendByTokenList(List<String> tokenList,  String title, String body) {
+    private void sendByTokenList(List<String> tokenList,  String title, String body, String imgUrl) {
         // 메시지 만들기
         List<Message> messages = tokenList.stream().map(token -> Message.builder()
+                .putData("img", imgUrl)
                 .putData("time", LocalDateTime.now().toString())
                 .setNotification(new Notification(title, body))
                 .setToken(token)

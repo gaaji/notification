@@ -14,5 +14,6 @@ spring:
     import:
       - noti.yml
       - kafka.yml
+      - redis.yml
   application:
     name: notification-service
