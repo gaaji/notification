@@ -58,15 +58,30 @@ public class FcmSender {
 
 
     public void sendServerMessage(List<String> tokenList,  String body) {
-        sendByTokenList(tokenList,"가지마켓",body,
-                "https://todoay-picture.s3.ap-northeast-2.amazonaws.com/gaaji/fd308fa8-f9c1-4e2c-8a35-4c0816b51f23gajji.png");
+        sendByTokenList(tokenList,"가지마켓",body);
+    }
+    public void sendChatMessage(String senderId, String senderName, String token, String roomName, String roomId, String message){
+        Message messages = Message.builder()
+                .putData("img", "https://todoay-picture.s3.ap-northeast-2.amazonaws.com/gaaji/fd308fa8-f9c1-4e2c-8a35-4c0816b51f23gajji.png")
+                .putData("time", LocalDateTime.now().toString())
+                .putData("roomId",roomId)
+                .putData("senderId", senderId)
+                .setNotification(new Notification(roomName, senderName + " : " + message))
+                .setToken(token)
+                .build();
+        try {
+
+            FirebaseMessaging.getInstance().send(messages);
+        } catch (FirebaseMessagingException e) {
+            log.error("cannot send to memberList push message. error info : {}", e.getMessage());
+        }
     }
 
     // 알림 보내기
-    private void sendByTokenList(List<String> tokenList,  String title, String body, String imgUrl) {
+    private void sendByTokenList(List<String> tokenList,  String title, String body) {
         // 메시지 만들기
         List<Message> messages = tokenList.stream().map(token -> Message.builder()
-                .putData("img", imgUrl)
+                .putData("img", "https://todoay-picture.s3.ap-northeast-2.amazonaws.com/gaaji/fd308fa8-f9c1-4e2c-8a35-4c0816b51f23gajji.png")
                 .putData("time", LocalDateTime.now().toString())
                 .setNotification(new Notification(title, body))
                 .setToken(token)
@@ -95,5 +110,7 @@ public class FcmSender {
             log.error("cannot send to memberList push message. error info : {}", e.getMessage());
         }
     }
+
+
 
 }
